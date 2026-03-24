@@ -1,21 +1,50 @@
 import "./Login.css";
 import { useState } from "react";
-import dashboardPreview from "../../assets/dashboard-img.png"; // replace with your actual image path
+import dashboardPreview from "../../assets/dashboard-img.png";
+import { useNavigate } from "react-router-dom";
+import supabase from "../../services/supabase";
 
 function Login() {
+  const navigate = useNavigate();
+  const [error, setError] = useState(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async () => {
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) {
+      setError(error.message);
+      return;
+    }
+    navigate("/");
+  };
+
   return (
     <section className="min-h-screen flex bg-[#0f172a]">
-      <LoginSection />
+      <LoginSection
+        email={email}
+        setEmail={setEmail}
+        password={password}
+        setPassword={setPassword}
+        error={error}
+        onHandleLogin={handleLogin}
+      />
     </section>
   );
 }
 
-function LoginSection() {
+function LoginSection({
+  email,
+  setEmail,
+  password,
+  setPassword,
+  error,
+  onHandleLogin,
+}) {
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
-
   const isFormValid = email.trim() !== "" && password.trim() !== "";
   return (
     <>
@@ -82,8 +111,8 @@ function LoginSection() {
               <label className="flex items-center gap-2 cursor-pointer group">
                 <input
                   type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
+                  // checked={rememberMe}
+                  // onChange={(e) => setRememberMe(e.target.checked)}
                   className="w-4 h-4 accent-[#7c3aed] cursor-pointer"
                 />
                 <span className="text-[#f9fafb] text-sm group-hover:text-[#b99af0] transition-colors">
@@ -105,6 +134,7 @@ function LoginSection() {
             </div>
 
             {/* Submit */}
+            {error && <p className="text-red-400 text-sm">{error}</p>}
             <button
               disabled={!isFormValid}
               className={`w-full py-3.5 rounded-[10px] text-sm font-semibold uppercase tracking-widest transition-all duration-200 ${
@@ -112,6 +142,7 @@ function LoginSection() {
                   ? "bg-[#7c3aed] hover:bg-[#6d28d9] text-white shadow-lg shadow-[#7c3aed]/30 cursor-pointer"
                   : "bg-[#a78bfa] text-white/60 cursor-not-allowed"
               }`}
+              onClick={onHandleLogin}
             >
               Login
             </button>
