@@ -1,0 +1,29 @@
+:root {
+  /* Backgrounds */
+  --bg-primary: #0f172a;
+  --bg-surface: #1e293b;
+  --bg-light: #f9fafb;
+
+  /* Brand / Accent */
+  --accent: #7c3aed;
+  --accent-hover: #6d28d9;
+  --accent-disabled: #a78bfa;
+  --accent-light: #b99af0;
+
+  /* Text */
+  --text-primary: #f9fafb;
+  --text-muted: #9ca3af;
+  --text-dark: #1e293b;
+
+  /* Status */
+  --error: #7f1d1d;
+  --success: #16a34a;
+  --warning: #d97706;
+
+  /* Border */
+  --border: #334155;
+
+  /* Misc */
+  --radius: 9px;
+  --radius-lg: 10px;
+}
