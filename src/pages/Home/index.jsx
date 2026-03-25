@@ -1,11 +1,15 @@
 import Sidebar from "./SideBar";
-import MainContent from "./MainContent";
+import { Outlet } from "react-router-dom";
+
+import NavBar from "../../components/NavBar";
 
 export default function Home() {
   return (
-    <div className="flex">
+    <div className="flex min-h-screen bg-[#0f172a]">
       <Sidebar />
-      <MainContent />
+      <div className="flex-1 ml-64">
+        <Outlet />
+      </div>
     </div>
   );
 }
