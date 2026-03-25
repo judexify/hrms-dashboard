@@ -17,10 +17,12 @@ import Jobs from "./routes/Jobs";
 import Leaves from "./routes/Leaves";
 import Payroll from "./routes/Payroll";
 import Settings from "./routes/Settings";
+import { Toaster } from "react-hot-toast";
 
 export default function App() {
   return (
     <div className="App">
+      <Toaster position="top-right" />
       <Router>
         <Routes>
           <Route element={<PrivateRoutes />}>

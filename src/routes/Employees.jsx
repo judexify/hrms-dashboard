@@ -13,6 +13,8 @@ import SearchBar from "../components/SearchBar";
 import AddButton from "../components/AddButton";
 import { useEffect, useState } from "react";
 import supabase from "../services/supabase";
+import MultiStep from "../components/MultiStepForm";
+import { toast } from "react-hot-toast";
 
 const columns = [
   "Employee ID",
@@ -84,6 +86,67 @@ export default function Employees() {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(5);
   const [query, setQuery] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [step, setStep] = useState(1);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    location: "",
+    title: "",
+    role: "",
+    department: "",
+    employment_type: "",
+    status: "",
+  });
+
+  const handleChange = (e) =>
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  const handleNext = () => setStep(2);
+  const handleBack = () => setStep(1);
+  const handleSubmit = async () => {
+    const { error } = await supabase.from("employees").insert([
+      {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        location: formData.location,
+        title: formData.title,
+        role: formData.role,
+        department: formData.department,
+        employment_type: formData.employment_type,
+        status: formData.status,
+      },
+    ]);
+
+    if (error) {
+      toast.error("Failed to add employee. Please try again.");
+      console.error("Error adding employee:", error);
+      return;
+    }
+
+    // refresh the table
+    const { data } = await supabase.from("employees").select(`
+    id, name, role, avatar, status, title, department, employment_type
+  `);
+    if (data) setEmployee(data);
+    toast.success("Employee added successfully!");
+
+    // close modal and reset
+    setShowModal(false);
+    setStep(1);
+    setFormData({
+      name: "",
+      email: "",
+      phone: "",
+      location: "",
+      title: "",
+      role: "",
+      department: "",
+      employment_type: "",
+      status: "",
+    });
+  };
 
   useEffect(() => {
     const fetchEmployee = async () => {
@@ -140,7 +203,10 @@ export default function Employees() {
 
           {/* Actions */}
           <div className="flex items-center gap-3">
-            <AddButton buttonText={"Add New Employee"} />
+            <AddButton
+              buttonText={"Add New Employee"}
+              onClick={() => setShowModal(true)}
+            />
             <button className="flex items-center gap-2 px-4 py-2.5 border border-[#334155] text-[#f9fafb] text-sm rounded-lg hover:border-[#7c3aed] transition-all">
               <SlidersHorizontal size={16} />
               Filter
@@ -288,6 +354,18 @@ export default function Employees() {
           </div>
         </div>
       </div>
+
+      {showModal && (
+        <MultiStep
+          onClose={() => setShowModal(false)}
+          step={step}
+          formData={formData}
+          onChange={handleChange}
+          onNext={handleNext}
+          onBack={handleBack}
+          onSubmit={handleSubmit}
+        />
+      )}
     </div>
   );
 }
