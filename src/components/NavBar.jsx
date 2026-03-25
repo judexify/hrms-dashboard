@@ -1,9 +1,9 @@
 import "./index.css";
-import { Bell, ChevronDown, User, LogOut } from "lucide-react";
+import { Bell, ChevronDown, User, LogOut, Menu } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 import supabase from "../services/supabase";
 
-export default function Header({ title, subtitle, fullName }) {
+export default function Header({ title, subtitle, fullName, onMenuClick }) {
   const [open, setOpen] = useState(false);
   const modalRef = useRef(null);
 
@@ -28,20 +28,28 @@ export default function Header({ title, subtitle, fullName }) {
         <div className="fixed inset-0 z-10 pointer-events-none backdrop-blur-sm bg-black/20" />
       )}
       <div className="flex items-center justify-between px-8 py-5 bg-[#0f172a] border-b border-[#1e293b]">
-        {/* Left — Title & Subtitle */}
-        <div>
-          <h1 className="text-[#f9fafb] text-2xl font-bold">{title}</h1>
-          <p className="text-[#9ca3af] text-sm">{subtitle}</p>
+        {/* Left — Hamburger + Title & Subtitle */}
+        <div className="flex items-center gap-4">
+          {/* Hamburger — mobile only */}
+          <button
+            onClick={onMenuClick}
+            className="lg:hidden text-[#9ca3af] hover:text-white transition-colors"
+          >
+            <Menu size={22} />
+          </button>
+
+          <div>
+            <h1 className="text-[#f9fafb] text-2xl font-bold">{title}</h1>
+            <p className="text-[#9ca3af] text-sm">{subtitle}</p>
+          </div>
         </div>
 
         {/* Right — Notification & Profile */}
         <div className="flex items-center gap-3">
-          {/* Bell */}
           <button className="w-11 h-11 flex items-center justify-center rounded-lg border border-[#334155] text-[#9ca3af] hover:text-[#f9fafb] hover:border-[#7c3aed] transition-all">
             <Bell size={18} />
           </button>
 
-          {/* Profile */}
           <div className="relative z-20" ref={modalRef}>
             <div
               onClick={() => setOpen(!open)}
@@ -49,10 +57,10 @@ export default function Header({ title, subtitle, fullName }) {
             >
               <div className="w-7 h-7 rounded-full bg-[#7c3aed] flex items-center justify-center">
                 <span className="text-white text-xs font-bold">
-                  {fullName.charAt(0)}
+                  {fullName?.charAt(0)}
                 </span>
               </div>
-              <div>
+              <div className="hidden sm:block">
                 <p className="text-[#f9fafb] text-sm font-semibold leading-none">
                   {fullName}
                 </p>
@@ -64,7 +72,6 @@ export default function Header({ title, subtitle, fullName }) {
               />
             </div>
 
-            {/* dropdown modal */}
             {open && (
               <div className="absolute right-0 mt-2 w-48 bg-[#1e293b] border border-[#334155] rounded-[10px] shadow-xl overflow-hidden">
                 <button

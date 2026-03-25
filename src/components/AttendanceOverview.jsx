@@ -16,7 +16,7 @@ export default function AttendanceOverview() {
           id,
           check_in,
           status,
-            department,
+          department,
           employees (
             name
           )
@@ -28,7 +28,6 @@ export default function AttendanceOverview() {
       if (!error) setRecords(data);
       setLoading(false);
     };
-
     fetchAttendance();
   }, []);
 
@@ -46,7 +45,7 @@ export default function AttendanceOverview() {
   };
 
   return (
-    <div className="bg-[#1e293b] border border-[#334155] rounded-xl p-6 mt-5">
+    <div className="bg-[#1e293b] border border-[#334155] rounded-xl p-4 md:p-6 mt-5">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <p className="text-[#f9fafb] text-base font-bold">
@@ -60,58 +59,59 @@ export default function AttendanceOverview() {
         </button>
       </div>
 
-      {/* Table Header */}
-      <div className="grid grid-cols-4 pb-3 border-b border-[#334155]">
-        {["Employee Name", "Department", "Check In Time", "Status"].map((h) => (
-          <p key={h} className="text-[#9ca3af] text-sm">
-            {h}
-          </p>
-        ))}
-      </div>
-
-      {/* Rows */}
-      {loading ? (
-        <p className="text-[#9ca3af] text-sm py-6 text-center">Loading...</p>
-      ) : records.length === 0 ? (
-        <p className="text-[#9ca3af] text-sm py-6 text-center">
-          No attendance records found.
-        </p>
-      ) : (
-        records.map((record) => (
-          <div
-            key={record.id}
-            className="grid grid-cols-4 items-center py-4 border-b border-[#334155] last:border-0"
-          >
-            {/* Employee Name + Avatar */}
-            <div className="flex flex-col items-start gap-1">
-              <img
-                src={
-                  record.employees?.avatar_url ||
-                  `https://api.dicebear.com/7.x/avataaars/svg?seed=${record.employees?.name}`
-                }
-                alt={record.employees?.name}
-                className="w-10 h-10 rounded-full object-cover bg-[#334155]"
-              />
-              <p className="text-[#f9fafb] text-sm font-medium">
-                {record.employees?.name}
-              </p>
-            </div>
-
-            {/* Designation */}
-            <p className="text-[#f9fafb] text-sm">{record.department}</p>
-
-            {/* Check In Time */}
-            <p className="text-[#f9fafb] text-sm">{record.check_in || "—"}</p>
-
-            {/* Status */}
-            <span
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold w-fit ${statusStyle(record.status)}`}
-            >
-              {record.status}
-            </span>
+      {/* Scrollable table wrapper on mobile */}
+      <div className="overflow-x-auto">
+        <div className="min-w-[500px]">
+          {/* Table Header */}
+          <div className="grid grid-cols-4 pb-3 border-b border-[#334155]">
+            {["Employee Name", "Department", "Check In Time", "Status"].map(
+              (h) => (
+                <p key={h} className="text-[#9ca3af] text-sm">
+                  {h}
+                </p>
+              ),
+            )}
           </div>
-        ))
-      )}
+
+          {/* Rows */}
+          {loading ? (
+            <p className="text-[#9ca3af] text-sm py-6 text-center">
+              Loading...
+            </p>
+          ) : records.length === 0 ? (
+            <p className="text-[#9ca3af] text-sm py-6 text-center">
+              No attendance records found.
+            </p>
+          ) : (
+            records.map((record) => (
+              <div
+                key={record.id}
+                className="grid grid-cols-4 items-center py-4 border-b border-[#334155] last:border-0"
+              >
+                <div className="flex flex-col items-start gap-1">
+                  <img
+                    src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${record.employees?.name}`}
+                    alt={record.employees?.name}
+                    className="w-10 h-10 rounded-full object-cover bg-[#334155]"
+                  />
+                  <p className="text-[#f9fafb] text-sm font-medium">
+                    {record.employees?.name}
+                  </p>
+                </div>
+                <p className="text-[#f9fafb] text-sm">{record.department}</p>
+                <p className="text-[#f9fafb] text-sm">
+                  {record.check_in || "—"}
+                </p>
+                <span
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold w-fit ${statusStyle(record.status)}`}
+                >
+                  {record.status}
+                </span>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
     </div>
   );
 }

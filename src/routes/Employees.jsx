@@ -25,6 +25,7 @@ const columns = [
   "Status",
   "Action",
 ];
+import { useOutletContext } from "react-router-dom";
 
 // const mockData = [
 //   {
@@ -99,6 +100,7 @@ export default function Employees() {
     employment_type: "",
     status: "",
   });
+  const { onMenuClick } = useOutletContext();
 
   const handleChange = (e) =>
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -191,13 +193,14 @@ export default function Employees() {
         title="All Employees"
         subtitle="Manage your employees"
         fullName="Victor John"
+        onMenuClick={onMenuClick}
       />
 
-      <div className="p-8">
+      <div className="p-4 md:p-8">
         {/* Toolbar */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
           {/* Search */}
-          <div className="flex items-center gap-3 bg-[#1e293b] border border-[#334155] rounded-lg px-4 py-2.5 w-72">
+          <div className="flex items-center gap-3 bg-[#1e293b] border border-[#334155] rounded-lg px-4 py-2.5 w-full sm:w-72">
             <SearchBar query={query} handleInputChange={handleInputChange} />
           </div>
 
@@ -214,86 +217,77 @@ export default function Employees() {
           </div>
         </div>
 
-        {/* Table */}
-        <div className="bg-[#1e293b] border border-[#334155] rounded-xl overflow-hidden">
-          {/* Table Header */}
-          <div className="grid grid-cols-[1fr_2fr_1.5fr_2fr_1fr_1fr_1fr] px-6 py-4 border-b border-[#334155]">
-            {columns.map((col) => (
-              <p key={col} className="text-[#7c3aed] text-sm font-medium">
-                {col}
-              </p>
-            ))}
-          </div>
-
-          {/* Table Rows */}
-          {loading ? (
-            <p className="text-[#9ca3af] text-sm py-6 text-center">
-              Loading...
-            </p>
-          ) : displayed.length === 0 ? (
-            <p className="text-[#9ca3af] text-sm py-6 text-center">
-              No attendance records found.
-            </p>
-          ) : (
-            displayed.map((emp, i) => (
-              <div
-                key={emp.id}
-                className={`grid grid-cols-[1fr_2fr_1.5fr_2fr_1fr_1fr_1fr] px-6 py-4 items-center border-b border-[#334155] last:border-0 transition-colors hover:bg-[#0f172a]/40 ${i % 2 === 1 ? "bg-[#0f172a]/20" : ""}`}
-              >
-                {/* ID */}
-                <p className="text-[#f9fafb] text-sm">{emp.id}</p>
-
-                {/* Name + Avatar */}
-                <div className="flex items-center gap-3">
-                  <img
-                    src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${emp.name}`}
-                    alt={emp.name}
-                    className="w-9 h-9 rounded-full bg-[#334155]"
-                  />
-                  <p className="text-[#f9fafb] text-sm font-medium">
-                    {emp.name}
+        <div className="overflow-x-auto">
+          <div className="min-w-[750px]">
+            <div className="bg-[#1e293b] border border-[#334155] rounded-xl overflow-hidden">
+              {/* Table Header */}
+              <div className="grid grid-cols-[1fr_2fr_1.5fr_2fr_1fr_1fr_1fr] px-6 py-4 border-b border-[#334155]">
+                {columns.map((col) => (
+                  <p key={col} className="text-[#7c3aed] text-sm font-medium">
+                    {col}
                   </p>
-                </div>
-
-                {/* Department */}
-                <p className="text-[#f9fafb] text-sm">{emp.department}</p>
-
-                {/* Designation */}
-                <p className="text-[#f9fafb] text-sm">{emp.title}</p>
-
-                {/* Type */}
-                <p className="text-[#f9fafb] text-sm">{emp.employment_type}</p>
-
-                {/* Status */}
-                <span
-                  className={`px-3 py-1 rounded-lg text-xs font-semibold w-fit ${statusStyle(emp.status)}`}
-                >
-                  {emp.status}
-                </span>
-
-                {/* Actions */}
-                <div className="flex items-center gap-3">
-                  <button className="text-[#9ca3af] hover:text-[#7c3aed] transition-colors">
-                    <Eye size={17} />
-                  </button>
-                  <button className="text-[#9ca3af] hover:text-[#f9fafb] transition-colors">
-                    <Pencil size={17} />
-                  </button>
-                  <button className="text-[#9ca3af] hover:text-red-400 transition-colors">
-                    <Trash2 size={17} />
-                  </button>
-                </div>
+                ))}
               </div>
-            ))
-          )}
+
+              {/* Table Rows */}
+              {loading ? (
+                <p className="text-[#9ca3af] text-sm py-6 text-center">
+                  Loading...
+                </p>
+              ) : displayed.length === 0 ? (
+                <p className="text-[#9ca3af] text-sm py-6 text-center">
+                  No employees found.
+                </p>
+              ) : (
+                displayed.map((emp, i) => (
+                  <div
+                    key={emp.id}
+                    className={`grid grid-cols-[1fr_2fr_1.5fr_2fr_1fr_1fr_1fr] px-6 py-4 items-center border-b border-[#334155] last:border-0 transition-colors hover:bg-[#0f172a]/40 ${i % 2 === 1 ? "bg-[#0f172a]/20" : ""}`}
+                  >
+                    <p className="text-[#f9fafb] text-sm">{emp.id}</p>
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${emp.name}`}
+                        alt={emp.name}
+                        className="w-9 h-9 rounded-full bg-[#334155]"
+                      />
+                      <p className="text-[#f9fafb] text-sm font-medium">
+                        {emp.name}
+                      </p>
+                    </div>
+                    <p className="text-[#f9fafb] text-sm">{emp.department}</p>
+                    <p className="text-[#f9fafb] text-sm">{emp.title}</p>
+                    <p className="text-[#f9fafb] text-sm">
+                      {emp.employment_type}
+                    </p>
+                    <span
+                      className={`px-3 py-1 rounded-lg text-xs font-semibold w-fit ${statusStyle(emp.status)}`}
+                    >
+                      {emp.status}
+                    </span>
+                    <div className="flex items-center gap-3">
+                      <button className="text-[#9ca3af] hover:text-[#7c3aed] transition-colors">
+                        <Eye size={17} />
+                      </button>
+                      <button className="text-[#9ca3af] hover:text-[#f9fafb] transition-colors">
+                        <Pencil size={17} />
+                      </button>
+                      <button className="text-[#9ca3af] hover:text-red-400 transition-colors">
+                        <Trash2 size={17} />
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Pagination */}
-        <div className="flex items-center justify-between mt-5">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mt-5">
           {/* Rows per page */}
           <div className="flex items-center gap-2">
             <span className="text-[#9ca3af] text-sm">Showing</span>
-            {/* <div className="flex items-center gap-1 bg-[#1e293b] border border-[#334155] rounded-lg px-3 py-1.5 cursor-pointer"> */}
             <select
               onChange={(e) => {
                 setPerPage(Number(e.target.value));
@@ -310,11 +304,10 @@ export default function Employees() {
                 </option>
               ))}
             </select>
-            {/* </div> */}
           </div>
 
           {/* Page info + controls */}
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <span className="text-[#9ca3af] text-sm">
               Showing {start + 1} to{" "}
               {Math.min(start + perPage, employee.length)} of {employee.length}{" "}

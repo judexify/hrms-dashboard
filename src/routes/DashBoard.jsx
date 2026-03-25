@@ -7,6 +7,7 @@ import { StatCard } from "../components/StatCard";
 import { MyCalendar } from "../components/MyCalendar";
 import AttendanceChart from "../components/AttendanceChart.jsx";
 import AttendanceOverview from "../components/AttendanceOverview.jsx";
+import { useOutletContext } from "react-router-dom";
 
 const getGreeting = () => {
   const hour = new Date().getHours();
@@ -16,6 +17,7 @@ const getGreeting = () => {
 };
 
 export default function DashBoard() {
+  const { onMenuClick } = useOutletContext();
   const [hrName, setHrName] = useState(
     () => localStorage.getItem("hrName") || "",
   );
@@ -83,22 +85,36 @@ export default function DashBoard() {
         title={`Hello ${hrName.split(" ")[0]} 🤝`}
         subtitle={getGreeting()}
         fullName={`${hrName}`}
+        onMenuClick={onMenuClick}
       />
-      <div className="p-8">
-        <div className="grid grid-cols-3 gap-5">
-          <div className="col-span-2 grid grid-cols-2 gap-5">
+      <div className="p-4 md:p-8">
+        {/* Stats + Calendar */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {/* Stat Cards */}
+          <div className="grid grid-cols-2 gap-5 lg:col-span-2">
             {stats.map((s) => (
               <StatCard key={s.label} {...s} />
             ))}
           </div>
-          <MyCalendar />
+          {/* Calendar — full width on mobile, right column on desktop */}
+          <div className="col-span-1 md:col-span-2 lg:col-span-1">
+            <MyCalendar />
+          </div>
         </div>
-        <div className="grid grid-cols-3 gap-5 mt-5">
-          <div className="col-span-2">{/* <AttendanceChart /> */}</div>
-          <div>{/* your future content here */}</div>
+
+        {/* Chart */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mt-5">
+          <div className="lg:col-span-2">
+            <AttendanceChart />
+          </div>
+          <div>{/* future content */}</div>
         </div>
       </div>
-      <AttendanceOverview />
+
+      {/* Attendance Overview */}
+      <div className="px-4 md:px-8 pb-8 overflow-x-auto">
+        <AttendanceOverview />
+      </div>
     </>
   );
 }
