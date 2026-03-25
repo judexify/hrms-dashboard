@@ -94,9 +94,7 @@ export default function DashBoard() {
           <MyCalendar />
         </div>
         <div className="grid grid-cols-3 gap-5 mt-5">
-          <div className="col-span-2">
-            <AttendanceChart />
-          </div>
+          <div className="col-span-2">{/* <AttendanceChart /> */}</div>
           <div>{/* your future content here */}</div>
         </div>
       </div>

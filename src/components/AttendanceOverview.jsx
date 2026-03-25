@@ -25,9 +25,6 @@ export default function AttendanceOverview() {
         .order("check_in", { ascending: true })
         .limit(7);
 
-      console.log("data:", data);
-      console.log("error:", error);
-
       if (!error) setRecords(data);
       setLoading(false);
     };
