@@ -1,4 +1,4 @@
-export default function SearchBar() {
+export default function SearchBar({ query, handleInputChange }) {
   return (
     <>
       <svg
@@ -16,6 +16,8 @@ export default function SearchBar() {
       </svg>
       <input
         type="text"
+        value={query}
+        onChange={handleInputChange}
         placeholder="Search..."
         className="bg-transparent text-[#f9fafb] text-sm placeholder-[#9ca3af] outline-none w-full"
       />

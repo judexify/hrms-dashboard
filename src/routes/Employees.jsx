@@ -81,7 +81,9 @@ const statusStyle = (status) => {
 export default function Employees() {
   const [employee, setEmployee] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showing, setShowing] = useState(5);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(5);
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     const fetchEmployee = async () => {
@@ -108,11 +110,17 @@ export default function Employees() {
     fetchEmployee();
   }, []);
 
-  const displayed = employee.slice(0, showing);
-
-  function handleSelect(e) {
-    setShowing(() => Number(e.target.value));
-  }
+  const handleInputChange = (event) => {
+    setQuery(event.target.value);
+    setCurrentPage(1);
+  };
+  const filteredEmployees = employee.filter((emp) =>
+    emp.name.toLowerCase().includes(query.toLowerCase()),
+  );
+  const data = query ? filteredEmployees : employee;
+  const totalPages = Math.ceil(data.length / perPage);
+  const start = (currentPage - 1) * perPage;
+  const displayed = data.slice(start, start + perPage);
 
   return (
     <div className="min-h-screen bg-[#0f172a]">
@@ -127,7 +135,7 @@ export default function Employees() {
         <div className="flex items-center justify-between mb-6">
           {/* Search */}
           <div className="flex items-center gap-3 bg-[#1e293b] border border-[#334155] rounded-lg px-4 py-2.5 w-72">
-            <SearchBar />
+            <SearchBar query={query} handleInputChange={handleInputChange} />
           </div>
 
           {/* Actions */}
@@ -221,7 +229,10 @@ export default function Employees() {
             <span className="text-[#9ca3af] text-sm">Showing</span>
             {/* <div className="flex items-center gap-1 bg-[#1e293b] border border-[#334155] rounded-lg px-3 py-1.5 cursor-pointer"> */}
             <select
-              onChange={(e) => handleSelect(e)}
+              onChange={(e) => {
+                setPerPage(Number(e.target.value));
+                setCurrentPage(1);
+              }}
               className="bg-[#1e293b] border border-[#334155] rounded-lg px-3 py-1.5 text-[#f9fafb] text-sm outline-none cursor-pointer"
             >
               {Array.from(
@@ -239,25 +250,38 @@ export default function Employees() {
           {/* Page info + controls */}
           <div className="flex items-center gap-3">
             <span className="text-[#9ca3af] text-sm">
-              Showing 1 to 10 of 69 members
+              Showing {start + 1} to{" "}
+              {Math.min(start + perPage, employee.length)} of {employee.length}{" "}
+              members
             </span>
             <div className="flex items-center gap-1">
-              <button className="w-8 h-8 flex items-center justify-center rounded-lg border border-[#334155] text-[#9ca3af] hover:text-white transition-all">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                className="w-8 h-8 flex items-center justify-center rounded-lg border border-[#334155] text-[#9ca3af] hover:text-white transition-all"
+              >
                 <ChevronLeft size={15} />
               </button>
-              {[1, 2, 3, 4, 5].map((page) => (
-                <button
-                  key={page}
-                  className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-all ${
-                    page === 1
-                      ? "bg-[#7c3aed] text-white border border-[#7c3aed]"
-                      : "border border-[#334155] text-[#9ca3af] hover:text-white"
-                  }`}
-                >
-                  {page}
-                </button>
-              ))}
-              <button className="w-8 h-8 flex items-center justify-center rounded-lg border border-[#334155] text-[#9ca3af] hover:text-white transition-all">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-all ${
+                      page === currentPage
+                        ? "bg-[#7c3aed] text-white border border-[#7c3aed]"
+                        : "border border-[#334155] text-[#9ca3af] hover:text-white"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ),
+              )}
+              <button
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(p + 1, totalPages))
+                }
+                className="w-8 h-8 flex items-center justify-center rounded-lg border border-[#334155] text-[#9ca3af] hover:text-white transition-all"
+              >
                 <ChevronRight size={15} />
               </button>
             </div>
