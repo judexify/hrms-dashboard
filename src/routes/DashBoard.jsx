@@ -6,8 +6,9 @@ import { Users, Briefcase, CalendarCheck, FolderKanban } from "lucide-react";
 import { StatCard } from "../components/StatCard";
 import { MyCalendar } from "../components/MyCalendar";
 import AttendanceChart from "../components/AttendanceChart.jsx";
-import AttendanceOverview from "../components/AttendanceOverview.jsx";
+// import AttendanceOverview from "../components/AttendanceOverview.jsx";
 import { useOutletContext } from "react-router-dom";
+import { useEmployee, useAttendance } from "../context/HRContext.js";
 
 const getGreeting = () => {
   const hour = new Date().getHours();
@@ -21,6 +22,8 @@ export default function DashBoard() {
   const [hrName, setHrName] = useState(
     () => localStorage.getItem("hrName") || "",
   );
+  const { employee } = useEmployee();
+  const { attendanceCount } = useAttendance();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -48,11 +51,13 @@ export default function DashBoard() {
     year: "numeric",
   });
 
+  const totalEmployees = employee.length;
+
   const stats = [
     {
       icon: Users,
       label: "Total Employee",
-      value: "560",
+      value: totalEmployees,
       percent: "12%",
       updated: today,
     },
@@ -66,16 +71,16 @@ export default function DashBoard() {
     {
       icon: CalendarCheck,
       label: "Total Attendance",
-      value: "470",
+      value: attendanceCount,
       percent: "12%",
-      updated: today,
+      updated: "Every Saturday",
     },
     {
       icon: FolderKanban,
       label: "Total Project",
-      value: "250",
-      percent: "12%",
-      updated: today,
+      value: "-",
+      percent: "-",
+      updated: "🚫",
     },
   ];
 
@@ -112,9 +117,12 @@ export default function DashBoard() {
       </div>
 
       {/* Attendance Overview */}
-      <div className="px-4 md:px-8 pb-8 overflow-x-auto">
-        <AttendanceOverview />
-      </div>
+      {/* <div className="px-4 md:px-8 pb-8 overflow-x-auto">
+       
+        <AttendanceOverview 
+        arrayofHeader={["Employee Name", "Department", "Check In Time", "Status"]}
+         showViewButton={true} limit={7} />
+      </div> */}
     </>
   );
 }

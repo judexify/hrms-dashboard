@@ -1,25 +1,41 @@
-import { Eye, Pencil, Trash2, SlidersHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Eye,
+  Pencil,
+  Trash2,
+  SlidersHorizontal,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import supabase from "../services/supabase";
 import { useOutletContext } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import NavBar from "../components/NavBar";
 import SearchBar from "../components/SearchBar";
 import AddButton from "../components/AddButton";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import MultiStep from "../components/MultiStepForm";
+import { useEmployee } from "../context/HRContext.js";
 
-const columns = ["Employee ID", "Employee Name", "Department", "Designation", "Type", "Status", "Action"];
+const columns = [
+  "Employee ID",
+  "Employee Name",
+  "Department",
+  "Designation",
+  "Type",
+  "Status",
+  "Action",
+];
 
 const statusMap = {
   contract: "bg-[#7c3aed]/20 text-[#a78bfa] border border-[#7c3aed]/40",
   permanent: "bg-[#7c3aed]/20 text-[#a78bfa] border border-[#7c3aed]/40",
 };
 
-const statusStyle = (status) => statusMap[status?.toLowerCase()] || "bg-[#334155] text-[#9ca3af]";
+const statusStyle = (status) =>
+  statusMap[status?.toLowerCase()] || "bg-[#334155] text-[#9ca3af]";
 
 export default function Employees() {
-  const [employee, setEmployee] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { employee, setEmployee, loading } = useEmployee();
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(5);
   const [query, setQuery] = useState("");
@@ -53,7 +69,11 @@ export default function Employees() {
   async function handleDelete(id, name) {
     if (!id) return;
 
-    const { data: profile } = await supabase.from("hr_profile").select("name").eq("name", name).single();
+    const { data: profile } = await supabase
+      .from("hr_profile")
+      .select("name")
+      .eq("name", name)
+      .single();
 
     if (profile) {
       toast.error("Cannot delete an HR account.");
@@ -69,7 +89,10 @@ export default function Employees() {
             <button
               onClick={async () => {
                 toast.dismiss(t.id);
-                const { error } = await supabase.from("employees").delete().eq("id", id);
+                const { error } = await supabase
+                  .from("employees")
+                  .delete()
+                  .eq("id", id);
 
                 if (error) {
                   toast.error("Failed to delete employee.");
@@ -83,7 +106,10 @@ export default function Employees() {
             >
               Yes, Delete
             </button>
-            <button onClick={() => toast.dismiss(t.id)} className="px-3 py-1 bg-gray-600 hover:bg-gray-700 text-white text-xs rounded-lg">
+            <button
+              onClick={() => toast.dismiss(t.id)}
+              className="px-3 py-1 bg-gray-600 hover:bg-gray-700 text-white text-xs rounded-lg"
+            >
               Cancel
             </button>
           </div>
@@ -141,39 +167,41 @@ export default function Employees() {
     });
   }
 
-  useEffect(() => {
-    const fetchEmployee = async () => {
-      const { data, error } = await supabase.from("employees").select(
-        `
-        id,
-        name,
-        role,
-        avatar,
-        status,
-        title,
-         department,
-         employment_type
-        `,
-      );
+  // useEffect(() => {
+  //   const fetchEmployee = async () => {
+  //     const { data, error } = await supabase.from("employees").select(
+  //       `
+  //       id,
+  //       name,
+  //       role,
+  //       avatar,
+  //       status,
+  //       title,
+  //        department,
+  //        employment_type
+  //       `,
+  //     );
 
-      console.log("data:", data);
-      console.log("error:", error);
+  //     console.log("data:", data);
+  //     console.log("error:", error);
 
-      if (!error) setEmployee(data);
-      setLoading(false);
-    };
+  //     if (!error) setEmployee(data);
+  //     setLoading(false);
+  //   };
 
-    fetchEmployee();
-  }, []);
+  //   fetchEmployee();
+  // }, []);
 
-  const handleInputChange = (event) => {
-    setQuery(event.target.value);
+  const handleInputChange = (e) => {
+    setQuery(e.target.value);
     setCurrentPage(1);
   };
 
   const data = employee.filter((emp) => {
     const matchesQuery = emp.name.toLowerCase().includes(query.toLowerCase());
-    const matchesDept = selectedDepartments.length === 0 || selectedDepartments.includes(emp.department);
+    const matchesDept =
+      selectedDepartments.length === 0 ||
+      selectedDepartments.includes(emp.department);
 
     return matchesQuery && matchesDept;
   });
@@ -183,26 +211,62 @@ export default function Employees() {
 
   return (
     <div className="min-h-screen bg-[#0f172a]">
-      <NavBar title="All Employees" subtitle="Manage your employees" fullName="Victor John" onMenuClick={onMenuClick} />
+      <NavBar
+        title="All Employees"
+        subtitle="Manage your employees"
+        fullName="Victor John"
+        onMenuClick={onMenuClick}
+      />
 
       <div className="p-4 md:p-8">
         {/* Toolbar */}
-        <ToolBar query={query} handleInputChange={handleInputChange} setShowModal={setShowModal} setShowFilter={setShowFilter} />
+        <ToolBar
+          query={query}
+          handleInputChange={handleInputChange}
+          setShowModal={setShowModal}
+          setShowFilter={setShowFilter}
+          setShowTool={true}
+        />
 
         {/* // Table grid */}
-        <TableGrid loading={loading} displayed={displayed} onHandleTrash={handleDelete} />
+        <TableGrid
+          loading={loading}
+          displayed={displayed}
+          onHandleTrash={handleDelete}
+        />
 
         {/* Pagination */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mt-5">
           {/* Rows per page */}
-          <RowsPerView setPerPage={setPerPage} setCurrentPage={setCurrentPage} employee={employee} />
+          <RowsPerView
+            setPerPage={setPerPage}
+            setCurrentPage={setCurrentPage}
+            employee={employee}
+          />
 
           {/* Page info + controls */}
-          <Pagination start={start} perPage={perPage} employee={employee} setCurrentPage={setCurrentPage} totalPages={totalPages} currentPage={currentPage} />
+          <Pagination
+            start={start}
+            perPage={perPage}
+            employee={employee}
+            setCurrentPage={setCurrentPage}
+            totalPages={totalPages}
+            currentPage={currentPage}
+          />
         </div>
       </div>
 
-      {showModal && <MultiStep onClose={() => setShowModal(false)} step={step} formData={formData} onChange={handleChange} onNext={handleNext} onBack={handleBack} onSubmit={handleSubmit} />}
+      {showModal && (
+        <MultiStep
+          onClose={() => setShowModal(false)}
+          step={step}
+          formData={formData}
+          onChange={handleChange}
+          onNext={handleNext}
+          onBack={handleBack}
+          onSubmit={handleSubmit}
+        />
+      )}
 
       {showFilter && (
         <FilterModal
@@ -220,7 +284,13 @@ export default function Employees() {
   );
 }
 
-function ToolBar({ query, handleInputChange, setShowModal, setShowFilter }) {
+export function ToolBar({
+  query,
+  handleInputChange,
+  setShowModal,
+  setShowFilter,
+  setShowTool = false,
+}) {
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
       {/* Search */}
@@ -229,13 +299,22 @@ function ToolBar({ query, handleInputChange, setShowModal, setShowFilter }) {
       </div>
 
       {/* Actions */}
-      <div className="flex items-center gap-3">
-        <AddButton buttonText={"Add New Employee"} onClick={() => setShowModal(true)} />
-        <button onClick={() => setShowFilter(true)} className="flex items-center gap-2 px-4 py-2.5 border border-[#334155] text-[#f9fafb] text-sm rounded-lg hover:border-[#7c3aed] transition-all">
-          <SlidersHorizontal size={16} />
-          Filter
-        </button>
-      </div>
+
+      {setShowTool && (
+        <div className="flex items-center gap-3">
+          <AddButton
+            buttonText={"Add New Employee"}
+            onClick={() => setShowModal(true)}
+          />
+          <button
+            onClick={() => setShowFilter(true)}
+            className="flex items-center gap-2 px-4 py-2.5 border border-[#334155] text-[#f9fafb] text-sm rounded-lg hover:border-[#7c3aed] transition-all"
+          >
+            <SlidersHorizontal size={16} />
+            Filter
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -256,29 +335,43 @@ function TableGrid({ loading, displayed, onHandleTrash }) {
 
           {/* Table Rows */}
           {loading ? (
-            <p className="text-[#9ca3af] text-sm py-6 text-center">Loading...</p>
+            <p className="text-[#9ca3af] text-sm py-6 text-center">
+              Loading...
+            </p>
           ) : displayed.length === 0 ? (
-            <p className="text-[#9ca3af] text-sm py-6 text-center">No employees found.</p>
+            <p className="text-[#9ca3af] text-sm py-6 text-center">
+              No employees found.
+            </p>
           ) : (
             displayed.map((emp, i) => (
-              <div key={emp.id} className={`grid grid-cols-[1fr_2fr_1.5fr_2fr_1fr_1fr_1fr] px-6 py-4 items-center border-b border-[#334155] last:border-0 transition-colors hover:bg-[#0f172a]/40 ${i % 2 === 1 ? "bg-[#0f172a]/20" : ""}`}>
+              <div
+                key={emp.id}
+                className={`grid grid-cols-[1fr_2fr_1.5fr_2fr_1fr_1fr_1fr] px-6 py-4 items-center border-b border-[#334155] last:border-0 transition-colors hover:bg-[#0f172a]/40 ${i % 2 === 1 ? "bg-[#0f172a]/20" : ""}`}
+              >
                 <p className="text-[#f9fafb] text-sm">{emp.id}</p>
                 <div className="flex items-center gap-3">
-                  <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${emp.name}`} alt={emp.name} className="w-9 h-9 rounded-full bg-[#334155]" />
-                  <p className="text-[#f9fafb] text-sm font-medium">{emp.name}</p>
+                  <img
+                    src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${emp.name}`}
+                    alt={emp.name}
+                    className="w-9 h-9 rounded-full bg-[#334155]"
+                  />
+                  <p className="text-[#f9fafb] text-sm font-medium">
+                    {emp.name}
+                  </p>
                 </div>
                 <p className="text-[#f9fafb] text-sm">{emp.department}</p>
                 <p className="text-[#f9fafb] text-sm">{emp.title}</p>
                 <p className="text-[#f9fafb] text-sm">{emp.employment_type}</p>
-                <span className={`px-3 py-1 rounded-lg text-xs font-semibold w-fit ${statusStyle(emp.status)}`}>{emp.status}</span>
+                <span
+                  className={`px-3 py-1 rounded-lg text-xs font-semibold w-fit ${statusStyle(emp.status)}`}
+                >
+                  {emp.status}
+                </span>
                 <div className="flex items-center gap-3">
-                  <button className="text-[#9ca3af] hover:text-[#7c3aed] transition-colors">
-                    <Eye size={17} />
-                  </button>
-                  <button className="text-[#9ca3af] hover:text-[#f9fafb] transition-colors">
-                    <Pencil size={17} />
-                  </button>
-                  <button onClick={() => onHandleTrash(emp.id, emp.name)} className="text-[#9ca3af] hover:text-red-400 transition-colors">
+                  <button
+                    onClick={() => onHandleTrash(emp.id, emp.name)}
+                    className="text-[#9ca3af] hover:text-red-400 transition-colors"
+                  >
                     <Trash2 size={17} />
                   </button>
                 </div>
@@ -291,18 +384,20 @@ function TableGrid({ loading, displayed, onHandleTrash }) {
   );
 }
 
-function RowsPerView({ setPerPage, setCurrentPage, employee }) {
+export function RowsPerView({ setPerPage, setCurrentPage }) {
+  const options = [5, 10, 20, 50, 100];
+
   return (
     <div className="flex items-center gap-2">
       <span className="text-[#9ca3af] text-sm">Showing</span>
       <select
         onChange={(e) => {
           setPerPage(Number(e.target.value));
-          setCurrentPage(1);
+          if (setCurrentPage) setCurrentPage(1);
         }}
-        className="bg-[#1e293b] border border-[#334155] rounded-lg px-3 py-1.5 text-[#f9fafb] text-sm outline-none cursor-pointer"
+        className="bg-[#1e293b] border border-[#334155] rounded-lg px-3 py-1.5 text-[#f9fafb] text-sm outline-none cursor-pointer hover:border-[#7c3aed] transition-all"
       >
-        {Array.from({ length: Math.ceil(employee.length / 5) }, (_, i) => (i + 1) * 5).map((n) => (
+        {options.map((n) => (
           <option key={n} value={n} className="bg-[#1e293b]">
             {n}
           </option>
@@ -312,22 +407,62 @@ function RowsPerView({ setPerPage, setCurrentPage, employee }) {
   );
 }
 
-function Pagination({ start, perPage, employee, setCurrentPage, totalPages, currentPage }) {
+export function Pagination({
+  start,
+  perPage,
+  employee,
+  setCurrentPage,
+  totalPages,
+  currentPage,
+}) {
+  const total = employee?.length || 0;
+
+  if (total === 0) return null;
+
   return (
     <div className="flex flex-wrap items-center gap-3">
       <span className="text-[#9ca3af] text-sm">
-        Showing {start + 1} to {Math.min(start + perPage, employee.length)} of {employee.length} members
+        {total > 0 ? (
+          <>
+            Showing {start + 1} to {Math.min(start + perPage, total)} of {total}{" "}
+            members
+          </>
+        ) : (
+          "Loading records..."
+        )}
       </span>
+
       <div className="flex items-center gap-1">
-        <button onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))} className="w-8 h-8 flex items-center justify-center rounded-lg border border-[#334155] text-[#9ca3af] hover:text-white transition-all">
+        {/* 2. Disable Previous if on Page 1 */}
+        <button
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+          className="w-8 h-8 flex items-center justify-center rounded-lg border border-[#334155] text-[#9ca3af] hover:text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+        >
           <ChevronLeft size={15} />
         </button>
+
+        {/* 3. Page Numbers */}
         {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-          <button key={page} onClick={() => setCurrentPage(page)} className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-all ${page === currentPage ? "bg-[#7c3aed] text-white border border-[#7c3aed]" : "border border-[#334155] text-[#9ca3af] hover:text-white"}`}>
+          <button
+            key={page}
+            onClick={() => setCurrentPage(page)}
+            className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-all ${
+              page === currentPage
+                ? "bg-[#7c3aed] text-white border border-[#7c3aed]"
+                : "border border-[#334155] text-[#9ca3af] hover:text-white"
+            }`}
+          >
             {page}
           </button>
         ))}
-        <button onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))} className="w-8 h-8 flex items-center justify-center rounded-lg border border-[#334155] text-[#9ca3af] hover:text-white transition-all">
+
+        {/* 4. Disable Next if on Last Page */}
+        <button
+          disabled={currentPage === totalPages || totalPages === 0}
+          onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+          className="w-8 h-8 flex items-center justify-center rounded-lg border border-[#334155] text-[#9ca3af] hover:text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+        >
           <ChevronRight size={15} />
         </button>
       </div>
@@ -335,14 +470,25 @@ function Pagination({ start, perPage, employee, setCurrentPage, totalPages, curr
   );
 }
 
-function FilterModal({ onClose, onApply, departments = [], selectedDepartments, setSelectedDepartments }) {
+function FilterModal({
+  onClose,
+  onApply,
+  departments = [],
+  selectedDepartments,
+  setSelectedDepartments,
+}) {
   function handleDeptChange(dept) {
-    setSelectedDepartments((prev) => (prev.includes(dept) ? prev.filter((d) => d !== dept) : [...prev, dept]));
+    setSelectedDepartments((prev) =>
+      prev.includes(dept) ? prev.filter((d) => d !== dept) : [...prev, dept],
+    );
   }
   return (
     <>
       {/* Overlay */}
-      <div className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+      <div
+        className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+        onClick={onClose}
+      />
 
       {/* Modal */}
       <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
@@ -351,22 +497,41 @@ function FilterModal({ onClose, onApply, departments = [], selectedDepartments, 
           <p className="text-[#f9fafb] text-lg font-bold mb-5">Filter</p>
 
           {/* Department */}
-          <p className="text-[#f9fafb] text-sm font-semibold mb-3">Department</p>
+          <p className="text-[#f9fafb] text-sm font-semibold mb-3">
+            Department
+          </p>
           <div className="grid grid-cols-2 gap-2 mb-6">
             {departments.map((dept) => (
-              <label key={dept} className="flex items-center gap-2 cursor-pointer group">
-                <input type="checkbox" value={dept} checked={selectedDepartments.includes(dept)} onChange={() => handleDeptChange(dept)} className="w-4 h-4 accent-[#7c3aed] cursor-pointer" />
-                <span className="text-[#f9fafb] text-sm group-hover:text-[#a78bfa] transition-colors">{dept}</span>
+              <label
+                key={dept}
+                className="flex items-center gap-2 cursor-pointer group"
+              >
+                <input
+                  type="checkbox"
+                  value={dept}
+                  checked={selectedDepartments.includes(dept)}
+                  onChange={() => handleDeptChange(dept)}
+                  className="w-4 h-4 accent-[#7c3aed] cursor-pointer"
+                />
+                <span className="text-[#f9fafb] text-sm group-hover:text-[#a78bfa] transition-colors">
+                  {dept}
+                </span>
               </label>
             ))}
           </div>
 
           {/* Buttons */}
           <div className="flex items-center gap-3">
-            <button onClick={onClose} className="flex-1 py-3 rounded-xl border border-[#334155] text-[#f9fafb] text-sm font-semibold hover:border-[#7c3aed] transition-all">
+            <button
+              onClick={onClose}
+              className="flex-1 py-3 rounded-xl border border-[#334155] text-[#f9fafb] text-sm font-semibold hover:border-[#7c3aed] transition-all"
+            >
               Cancel
             </button>
-            <button onClick={onApply} className="flex-1 py-3 rounded-xl bg-[#7c3aed] hover:bg-[#6d28d9] text-white text-sm font-semibold transition-all shadow-lg shadow-[#7c3aed]/20">
+            <button
+              onClick={onApply}
+              className="flex-1 py-3 rounded-xl bg-[#7c3aed] hover:bg-[#6d28d9] text-white text-sm font-semibold transition-all shadow-lg shadow-[#7c3aed]/20"
+            >
               Apply
             </button>
           </div>

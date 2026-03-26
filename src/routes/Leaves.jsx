@@ -1,3 +1,7 @@
-export default function Leaves() {
-  return <p>this is Leaves...</p>;
+import NavBar from "../components/NavBar";
+import { useOutletContext } from "react-router-dom";
+
+export default function Attendance() {
+  const { onMenuClick } = useOutletContext();
+  return <NavBar title="Notifications" subtitle="All Notifications" fullName="Victor John" onMenuClick={onMenuClick} />;
 }
