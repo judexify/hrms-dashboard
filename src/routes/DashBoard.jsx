@@ -8,7 +8,11 @@ import { MyCalendar } from "../components/MyCalendar";
 import AttendanceChart from "../components/AttendanceChart.jsx";
 // import AttendanceOverview from "../components/AttendanceOverview.jsx";
 import { useOutletContext } from "react-router-dom";
-import { useEmployee, useAttendance } from "../context/HRContext.js";
+import {
+  useEmployee,
+  useAttendance,
+  useCandidates,
+} from "../context/HRContext.js";
 
 const getGreeting = () => {
   const hour = new Date().getHours();
@@ -24,6 +28,7 @@ export default function DashBoard() {
   );
   const { employee } = useEmployee();
   const { attendanceCount } = useAttendance();
+  const { candidates } = useCandidates();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -64,7 +69,7 @@ export default function DashBoard() {
     {
       icon: Briefcase,
       label: "Total Applicant",
-      value: "1050",
+      value: candidates.length,
       percent: "12%",
       updated: today,
     },
