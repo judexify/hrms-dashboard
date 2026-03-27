@@ -10,10 +10,14 @@ export function StatCard({ icon: Icon, label, value, percent, updated }) {
             {label}
           </p>
         </div>
-        <div className="flex flex-col items-center justify-center w-11 h-11 md:w-14 md:h-14 bg-green-500 rounded-xl text-white text-xs font-bold gap-0.5 shrink-0">
-          <span>▲</span>
+        {/* <div
+          className="flex flex-col items-center justify-center 
+  w-8 h-8 md:w-12 md:h-12 
+  text-green-500 text-[10px] md:text-xs font-bold gap-0 shrink-0"
+        >
+          <span className="text-[10px] md:text-xs">▲</span>
           <span>{percent}</span>
-        </div>
+        </div> */}
       </div>
       <p className="text-[#f9fafb] text-2xl md:text-3xl font-bold">{value}</p>
       <p className="text-[#9ca3af] text-xs border-t border-[#334155] pt-3">
