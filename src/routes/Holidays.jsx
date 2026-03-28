@@ -46,7 +46,7 @@ export default function Holidays() {
       <NavBar
         title="Holidays"
         subtitle="Company Holidays"
-        fullName="Jude Oluwadunsi"
+        fullName={localStorage.getItem("hrName") || "HR MANAGER"}
         onMenuClick={onMenuClick}
       />
 

@@ -4,6 +4,9 @@ import dashboardPreview from "../../assets/dashboard-img.png";
 import { useNavigate } from "react-router-dom";
 import supabase from "../../services/supabase";
 
+const DEMO_EMAIL = "demo@hrms.com";
+const DEMO_PASSWORD = "demo1234";
+
 function Login() {
   const navigate = useNavigate();
   const [error, setError] = useState(null);
@@ -22,6 +25,20 @@ function Login() {
     navigate("/");
   };
 
+  const handleDemoLogin = async () => {
+    setEmail(DEMO_EMAIL);
+    setPassword(DEMO_PASSWORD);
+    const { error } = await supabase.auth.signInWithPassword({
+      email: DEMO_EMAIL,
+      password: DEMO_PASSWORD,
+    });
+    if (error) {
+      setError(error.message);
+      return;
+    }
+    navigate("/");
+  };
+
   return (
     <section className="min-h-screen flex bg-[#0f172a]">
       <LoginSection
@@ -31,6 +48,7 @@ function Login() {
         setPassword={setPassword}
         error={error}
         onHandleLogin={handleLogin}
+        onDemoLogin={handleDemoLogin}
       />
     </section>
   );
@@ -43,6 +61,7 @@ function LoginSection({
   setPassword,
   error,
   onHandleLogin,
+  onDemoLogin,
 }) {
   const [showPassword, setShowPassword] = useState(false);
   const isFormValid = email.trim() !== "" && password.trim() !== "";
@@ -145,6 +164,12 @@ function LoginSection({
               onClick={onHandleLogin}
             >
               Login
+            </button>
+            <button
+              onClick={onDemoLogin}
+              className="w-full py-3.5 rounded-[10px] text-sm font-semibold border border-[#334155] text-[#9ca3af] hover:border-[#7c3aed] hover:text-[#f9fafb] transition-all duration-200"
+            >
+              Try Demo
             </button>
           </div>
         </div>

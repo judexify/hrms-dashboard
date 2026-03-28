@@ -118,7 +118,7 @@ export default function Jobs() {
       <NavBar
         title="Jobs"
         subtitle="Manage job listings"
-        fullName="Jude Oluwadunsi"
+        fullName={localStorage.getItem("hrName") || "HR MANAGER"}
         onMenuClick={onMenuClick}
       />
 

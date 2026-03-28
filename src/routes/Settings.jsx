@@ -13,7 +13,7 @@ export default function Settings() {
       <NavBar
         title="Settings"
         subtitle="All System Settings"
-        fullName="Jude Oluwadunsi"
+        fullName={localStorage.getItem("hrName") || "HR MANAGER"}
         onMenuClick={onMenuClick}
       />
 

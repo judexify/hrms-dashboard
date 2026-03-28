@@ -109,7 +109,7 @@ export default function Payroll() {
       <NavBar
         title="Payroll"
         subtitle="All Employee Payroll Records"
-        fullName="Jude Oluwadunsi"
+        fullName={localStorage.getItem("hrName") || "HR MANAGER"}
         onMenuClick={onMenuClick}
       />
 

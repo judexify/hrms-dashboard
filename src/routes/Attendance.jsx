@@ -63,7 +63,7 @@ export default function Attendance() {
       <NavBar
         title="Attendance"
         subtitle="All Employee Attendance"
-        fullName="Jude Oluwadunsi"
+        fullName={localStorage.getItem("hrName") || "HR MANAGER"}
         onMenuClick={onMenuClick}
       />
       <div className="p-4 md:p-8">

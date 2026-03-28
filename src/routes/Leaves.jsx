@@ -53,7 +53,7 @@ export default function Notifications() {
       <NavBar
         title="Notifications"
         subtitle="Leave requests and updates"
-        fullName="Jude Oluwadunsi"
+        fullName={localStorage.getItem("hrName") || "HR MANAGER"}
         onMenuClick={onMenuClick}
       />
 
