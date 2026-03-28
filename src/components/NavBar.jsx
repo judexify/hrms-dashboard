@@ -2,10 +2,12 @@ import "./index.css";
 import { Bell, ChevronDown, User, LogOut, Menu } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 import supabase from "../services/supabase";
+import { useNavigate } from "react-router-dom";
 
 export default function Header({ title, subtitle, fullName, onMenuClick }) {
   const [open, setOpen] = useState(false);
   const modalRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -46,7 +48,10 @@ export default function Header({ title, subtitle, fullName, onMenuClick }) {
 
         {/* Right — Notification & Profile */}
         <div className="flex items-center gap-3">
-          <button className="w-11 h-11 flex items-center justify-center rounded-lg border border-[#334155] text-[#9ca3af] hover:text-[#f9fafb] hover:border-[#7c3aed] transition-all">
+          <button
+            onClick={() => navigate("/leaves")}
+            className="w-11 h-11 flex items-center justify-center rounded-lg border border-[#334155] text-[#9ca3af] hover:text-[#f9fafb] hover:border-[#7c3aed] transition-all"
+          >
             <Bell size={18} />
           </button>
 

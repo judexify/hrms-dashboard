@@ -5,6 +5,8 @@ import EmployeeProvider from "../../context/HRContext.jsx";
 
 export default function Home() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
+  const [language, setLanguage] = useState("English");
 
   return (
     <EmployeeProvider>
@@ -16,10 +18,23 @@ export default function Home() {
           />
         )}
 
-        <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        <Sidebar
+          open={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+          darkMode={darkMode}
+          setDarkMode={setDarkMode}
+        />
 
         <div className="flex-1 lg:ml-64 flex flex-col min-w-0">
-          <Outlet context={{ onMenuClick: () => setSidebarOpen(true) }} />
+          <Outlet
+            context={{
+              onMenuClick: () => setSidebarOpen(true),
+              darkMode,
+              setDarkMode,
+              language,
+              setLanguage,
+            }}
+          />
         </div>
       </div>
     </EmployeeProvider>
