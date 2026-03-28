@@ -118,7 +118,7 @@ export default function Jobs() {
       <NavBar
         title="Jobs"
         subtitle="Manage job listings"
-        fullName="Victor John"
+        fullName="Jude Oluwadunsi"
         onMenuClick={onMenuClick}
       />
 

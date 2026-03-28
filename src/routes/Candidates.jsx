@@ -53,7 +53,7 @@ export default function Candidates() {
       <NavBar
         title="Candidates"
         subtitle="All Job Applicants"
-        fullName="Victor John"
+        fullName="Jude Oluwadunsi"
         onMenuClick={onMenuClick}
       />
 

@@ -214,7 +214,7 @@ export default function Employees() {
       <NavBar
         title="All Employees"
         subtitle="Manage your employees"
-        fullName="Victor John"
+        fullName="Jude Oluwadunsi"
         onMenuClick={onMenuClick}
       />
 

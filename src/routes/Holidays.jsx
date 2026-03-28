@@ -46,7 +46,7 @@ export default function Holidays() {
       <NavBar
         title="Holidays"
         subtitle="Company Holidays"
-        fullName="Victor John"
+        fullName="Jude Oluwadunsi"
         onMenuClick={onMenuClick}
       />
 

@@ -98,7 +98,6 @@ export default function DashBoard() {
         onMenuClick={onMenuClick}
       />
       <div className="p-4 md:p-8">
-        {/* Stats + Calendar */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {/* Stat Cards */}
           <div className="grid grid-cols-2 gap-5 lg:col-span-2">
@@ -117,7 +116,9 @@ export default function DashBoard() {
           <div className="lg:col-span-2">
             <AttendanceChart />
           </div>
-          <div>{/* future content */}</div>
+          <div className="coming-soon">
+            <p className="coming-soon-text">SCHEDULE'S COMING SOON.......</p>
+          </div>
         </div>
       </div>
 

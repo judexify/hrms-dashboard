@@ -1,1 +1,9 @@
 @import "tailwindcss";
+.coming-soon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.coming-soon-text {
+  color: #fff;
+}

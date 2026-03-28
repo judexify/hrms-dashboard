@@ -13,7 +13,7 @@ export default function Settings() {
       <NavBar
         title="Settings"
         subtitle="All System Settings"
-        fullName="Victor John"
+        fullName="Jude Oluwadunsi"
         onMenuClick={onMenuClick}
       />
 

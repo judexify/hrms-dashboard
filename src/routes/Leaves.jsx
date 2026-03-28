@@ -53,7 +53,7 @@ export default function Notifications() {
       <NavBar
         title="Notifications"
         subtitle="Leave requests and updates"
-        fullName="Victor John"
+        fullName="Jude Oluwadunsi"
         onMenuClick={onMenuClick}
       />
 

@@ -109,7 +109,7 @@ export default function Payroll() {
       <NavBar
         title="Payroll"
         subtitle="All Employee Payroll Records"
-        fullName="Victor John"
+        fullName="Jude Oluwadunsi"
         onMenuClick={onMenuClick}
       />
 
